@@ -716,3 +716,19 @@ h1 {
 .btn-sub-add:hover {
   opacity: 0.85;
 }
+
+#exportBtn, #importBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+#exportBtn:hover, #importBtn:hover {
+  border-color: var(--accent);
+  transform: scale(1.1);
+}
