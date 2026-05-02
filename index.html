@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Changa+One:ital@0;1&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+
+  <div class="header-row">
+  <h1 id="mainTitle">Anime Watchlist</h1>
+  <div class="header-actions">
+    <button id="undoBtn" title="Undo (Ctrl+Z)">↩️</button>
+    <button id="redoBtn" title="Redo (Ctrl+Y)">↪️</button>
+    <button id="themeToggle" title="Switch theme">🌙</button>
+  </div>
+</div>
+
+  <div class="type-tabs">
+    <button data-type="anime" class="active">Anime</button>
+    <button data-type="series">Series</button>
+    <button data-type="movie">Movies</button>
+  </div>
+
+  <div class="tabs">
+    <button id="tabWatched" class="active">
+      Watched <span id="countWatched"></span>
+    </button>
+    <button id="tabPlan">
+      Plan <span id="countPlan"></span>
+    </button>
+  </div>
+
+  <div class="input-group">
+    <input type="text" id="inputTask" placeholder="add list...">
+    <button id="addBtn">+</button>
+  </div>
+
+  <div id="selectBar" style="display:none">
+  <button id="selectAllBtn">Select All</button>
+  <button id="deleteSelectedBtn">Clear Selected(<span id="selectedCount">0</span>)</button>
+</div>
+<button id="selectModeBtn">☑ Select</button>
+
+  <p id="errorMsg"></p>
+
+  <div class="search-box">
+    <span id="searchIcon">🔍</span>
+    <input type="text" id="search" placeholder="find...">
+  </div>
+
+  <ul id="list"></ul>
+
+  <div class="poster-modal" id="posterModal">
+  <img id="posterModalImg" src="" alt="poster">
+</div>
+
+</div>
+<script src="script.js"></script>
+</body>
+</html>
