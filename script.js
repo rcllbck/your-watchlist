@@ -23,6 +23,9 @@ const selectBar = document.getElementById("selectBar");
 const selectAllBtn = document.getElementById("selectAllBtn");
 const deleteSelectedBtn = document.getElementById("deleteSelectedBtn");
 const selectedCount = document.getElementById("selectedCount");
+const exportBtn = document.getElementById("exportBtn");
+const importBtn = document.getElementById("importBtn");
+const importFile = document.getElementById("importFile");
 
 const normalize = str => str.trim().toLowerCase();
 
@@ -424,6 +427,43 @@ deleteSelectedBtn.onclick = () => {
   selected.clear();
   toggleSelectMode();
   save();
+};
+
+// Export
+exportBtn.onclick = () => {
+  const data = JSON.stringify(todos, null, 2);
+  const blob = new Blob([data], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "watchlist-backup.json";
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+// Import
+importBtn.onclick = () => importFile.click();
+
+importFile.onchange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!Array.isArray(data)) throw new Error();
+      todos = data;
+      save();
+      alert("Data berhasil diimport!");
+    } catch {
+      alert("File tidak valid!");
+    }
+  };
+  reader.readAsText(file);
+
+  // reset input biar bisa import file yang sama lagi
+  importFile.value = "";
 };
 
 document.addEventListener("keydown", (e) => {
