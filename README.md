@@ -15,4 +15,4 @@ App untuk mencatat anime, series, dan movie yang sudah ditonton atau ingin diton
 👉 [rcllbck.github.io/your-watchlist](https://rcllbck.github.io/your-watchlist)
 
 ## 📸 Preview
-![preview](screenshot.png)
+![preview](Screenshot.png)
