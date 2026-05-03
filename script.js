@@ -245,6 +245,125 @@ if (todo.poster && !selectMode) {
       const row = document.createElement("div");
       row.classList.add("edit-form-row");
 
+      // ── Ganti Poster ──
+const posterSection = document.createElement("div");
+posterSection.classList.add("poster-section");
+
+// preview poster sekarang
+if (todo.poster) {
+  const currentPoster = document.createElement("img");
+  currentPoster.src = todo.poster;
+  currentPoster.classList.add("current-poster");
+  posterSection.appendChild(currentPoster);
+}
+
+// tombol ganti poster
+const changePosterBtn = document.createElement("button");
+changePosterBtn.classList.add("btn-change-poster");
+changePosterBtn.textContent = todo.poster ? "🔄 Ganti Poster" : "🔍 Cari Poster";
+
+// input pencarian
+const posterSearchRow = document.createElement("div");
+posterSearchRow.classList.add("poster-search-row");
+posterSearchRow.style.display = "none";
+
+const posterSearchInput = document.createElement("input");
+posterSearchInput.type = "text";
+posterSearchInput.placeholder = "Cari judul...";
+posterSearchInput.value = todo.title;
+
+const posterSearchBtn = document.createElement("button");
+posterSearchBtn.textContent = "Cari";
+posterSearchBtn.classList.add("btn-poster-search");
+
+// hasil pencarian
+const posterResults = document.createElement("div");
+posterResults.classList.add("poster-results");
+
+posterSearchRow.appendChild(posterSearchInput);
+posterSearchRow.appendChild(posterSearchBtn);
+posterSection.appendChild(changePosterBtn);
+posterSection.appendChild(posterSearchRow);
+posterSection.appendChild(posterResults);
+form.appendChild(posterSection);
+
+changePosterBtn.onclick = (e) => {
+  e.stopPropagation();
+  posterSearchRow.style.display = posterSearchRow.style.display === "none" ? "flex" : "none";
+  posterResults.innerHTML = "";
+};
+
+posterSearchBtn.onclick = async (e) => {
+  e.stopPropagation();
+  const query = posterSearchInput.value.trim();
+  if (!query) return;
+
+  posterResults.innerHTML = "<span style='color:var(--text-muted);font-size:12px'>Mencari...</span>";
+
+  try {
+    let results = [];
+
+    if (currentType === "anime") {
+      const url = `https://kitsu.io/api/edge/anime?filter[text]=${encodeURIComponent(query)}&page[limit]=6`;
+      const r = await fetch(url);
+      const data = await r.json();
+      results = data.data.map(item => ({
+        title: item.attributes.canonicalTitle,
+        poster: item.attributes.posterImage?.medium
+      })).filter(r => r.poster);
+
+    } else if (currentType === "series") {
+      const url = `https://api.themoviedb.org/3/search/tv?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}`;
+      const r = await fetch(url);
+      const data = await r.json();
+      results = data.results.slice(0, 6).map(item => ({
+        title: item.name,
+        poster: item.poster_path ? `https://image.tmdb.org/t/p/w300${item.poster_path}` : null
+      })).filter(r => r.poster);
+
+    } else if (currentType === "movie") {
+      const url = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}`;
+      const r = await fetch(url);
+      const data = await r.json();
+      results = data.results.slice(0, 6).map(item => ({
+        title: item.title,
+        poster: item.poster_path ? `https://image.tmdb.org/t/p/w300${item.poster_path}` : null
+      })).filter(r => r.poster);
+    }
+
+    posterResults.innerHTML = "";
+
+    if (!results.length) {
+      posterResults.innerHTML = "<span style='color:var(--text-muted);font-size:12px'>Tidak ada hasil</span>";
+      return;
+    }
+
+    results.forEach(result => {
+      const img = document.createElement("img");
+      img.src = result.poster;
+      img.title = result.title;
+      img.classList.add("poster-result-item");
+
+      img.onclick = (e) => {
+        e.stopPropagation();
+        const idx = todos.findIndex(t => t.id === todo.id);
+        todos[idx].poster = result.poster;
+        activeEditId = null;
+        save();
+      };
+
+      posterResults.appendChild(img);
+    });
+
+  } catch (err) {
+    posterResults.innerHTML = "<span style='color:var(--danger);font-size:12px'>Gagal mencari</span>";
+  }
+};
+
+posterSearchInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") posterSearchBtn.click();
+});
+
       const formActions = document.createElement("div");
       formActions.classList.add("edit-form-actions");
 
